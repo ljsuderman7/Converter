@@ -14,8 +14,8 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
 
     private Button btnConvert;
-    private TextView txtTopConvert, txtBottomConvert, txtConvertedNumber;
-    private AutoCompleteTextView txtTopUnit, txtBottomUnit, txtConversion;
+    private TextView txtNumberToConvert, txtConverted;
+    private AutoCompleteTextView txtUnitFrom, txtUnitTo, txtConversion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,12 +23,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         btnConvert = findViewById(R.id.btnConvert);
-        txtBottomConvert = findViewById(R.id.txtBottomConvert);
-        txtTopConvert = findViewById(R.id.txtTopConvert);
-        txtBottomUnit = findViewById(R.id.txtBottomUnit);
-        txtTopUnit = findViewById(R.id.txtTopUnit);
+        txtUnitFrom = findViewById(R.id.txtUnitFrom);
+        txtUnitTo = findViewById(R.id.txtUnitTo);
+        txtNumberToConvert = findViewById(R.id.txtNumberToConvert);
+        txtConverted = findViewById(R.id.txtConverted);
         txtConversion = findViewById(R.id.txtConversion);
-        //txtConvertedNumber = findViewById(R.id.txtTopConvertedNumber);
 
         //TODO: add more conversion options
         String[] conversionOptions = {"Temperature", "Length"};
@@ -47,12 +46,12 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 switch (String.valueOf(txtConversion.getText())) {
                     case "Temperature":
-                        txtTopUnit.setAdapter(temperatureAdapter);
-                        txtBottomUnit.setAdapter(temperatureAdapter);
+                        txtUnitFrom.setAdapter(temperatureAdapter);
+                        txtUnitTo.setAdapter(temperatureAdapter);
                         break;
                     case "Length":
-                        txtTopUnit.setAdapter(lengthAdapter);
-                        txtBottomUnit.setAdapter(lengthAdapter);
+                        txtUnitFrom.setAdapter(lengthAdapter);
+                        txtUnitTo.setAdapter(lengthAdapter);
                         break;
                 }
             }
@@ -64,8 +63,8 @@ public class MainActivity extends AppCompatActivity {
                 double conversion = 0.0;
                 switch (String.valueOf(txtConversion.getText())) {
                     case "Temperature":
-                        conversion = temperatureConversion(String.valueOf(txtTopUnit.getText()), String.valueOf(txtBottomUnit.getText()),
-                                Double.parseDouble(String.valueOf(txtTopConvert.getText())));
+                        conversion = temperatureConversion(String.valueOf(txtUnitFrom.getText()), String.valueOf(txtUnitTo.getText()),
+                                Double.parseDouble(String.valueOf(txtNumberToConvert.getText())));
                         break;
                     case "Length":
                         lengthConversion();
@@ -76,7 +75,9 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 //TODO: only display with a decimal if necessary
-                txtBottomConvert.setText(String.valueOf(conversion));
+                //      make a nicer message
+                txtConverted.setVisibility(View.VISIBLE);
+                txtConverted.setText(String.valueOf(conversion));
             }
         });
     }

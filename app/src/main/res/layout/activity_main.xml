@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    tools:visibility="visible">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,8 +25,8 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="10dp"
-            android:hint="Conversion">
+            android:hint="Conversion Type"
+            android:paddingBottom="10dp">
 
             <AutoCompleteTextView
                 android:id="@+id/txtConversion"
@@ -35,103 +36,71 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <LinearLayout
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/inlUnitFrom"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingBottom="10dp">
+            android:hint="Select Unit">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/inlTopConvert"
+            <AutoCompleteTextView
+                android:id="@+id/txtUnitFrom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
-                app:endIconMode="clear_text">
+                android:inputType="none" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/txtTopConvert"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/inlTopUnit"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight= "1"
-                android:hint="Unit">
-
-                <AutoCompleteTextView
-                    android:id="@+id/txtTopUnit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="none" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-        </LinearLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Conver To"
-            android:textAlignment="textEnd" />
+            android:text="To"
+            android:textAlignment="center" />
 
-        <LinearLayout
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/inlUnitTo"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:hint="Select Unit"
             android:paddingBottom="10dp">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/inlBottomConvert"
+            <AutoCompleteTextView
+                android:id="@+id/txtUnitTo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
-                app:endIconMode="clear_text">
+                android:inputType="none" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/txtBottomConvert"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:enabled="false"/>
-            </com.google.android.material.textfield.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/inlBottomUnit"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/inlNumberToConvert"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Number to Convert"
+            app:endIconMode="clear_text">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txtNumberToConvert"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="Unit">
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-                <AutoCompleteTextView
-                    android:id="@+id/txtBottomUnit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="none" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-        </LinearLayout>
-
-<!--        <com.google.android.material.textfield.TextInputLayout-->
-<!--            android:id="@+id/inlConvertedNumber"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            app:endIconMode="clear_text">-->
-
-<!--            <com.google.android.material.textfield.TextInputEditText-->
-<!--                android:id="@+id/txtTopConvertedNumber"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content" />-->
-<!--        </com.google.android.material.textfield.TextInputLayout>-->
+        <TextView
+            android:id="@+id/txtConverted"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="textStart"
+            android:textSize="16sp"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/btnConvert"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Convert!" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
