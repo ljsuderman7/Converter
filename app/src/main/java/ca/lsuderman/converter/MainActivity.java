@@ -61,10 +61,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 double conversion = 0.0;
-                switch (String.valueOf(txtConversion.getText())) {
+                String conversionType = String.valueOf(txtConversion.getText());
+                String convertFrom = String.valueOf(txtUnitFrom.getText());
+                String convertTo = String.valueOf(txtUnitTo.getText());
+                double numberToConvert = Double.parseDouble(String.valueOf(txtNumberToConvert.getText()));
+                switch (conversionType) {
                     case "Temperature":
-                        conversion = temperatureConversion(String.valueOf(txtUnitFrom.getText()), String.valueOf(txtUnitTo.getText()),
-                                Double.parseDouble(String.valueOf(txtNumberToConvert.getText())));
+                        conversion = temperatureConversion(convertFrom, convertTo ,numberToConvert);
                         break;
                     case "Length":
                         lengthConversion();
@@ -75,37 +78,44 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 //TODO: only display with a decimal if necessary
-                //      make a nicer message
+
+                String conversionMessage = numberToConvert + " " + convertFrom + " is " + conversion + " " + convertTo;
                 txtConverted.setVisibility(View.VISIBLE);
-                txtConverted.setText(String.valueOf(conversion));
+                txtConverted.setText(conversionMessage);
+
+                try {
+                    ((ConverterDB) getApplication()).addConversion(conversionType, convertFrom, convertTo, numberToConvert, conversion);
+                } catch (Exception ex){
+                    // no-op
+                }
             }
         });
     }
 
-    private double temperatureConversion(String topUnit, String bottomUnit, double topNumber){
+    private double temperatureConversion(String convertFrom, String convertTo, double numberToConvert){
         double conversion = 0.0;
-        if (topUnit.equals("Celsius")){
-            if (bottomUnit.equals("Fahrenheit")){
-                conversion = (topNumber * (9.0/5.0)) + 32.0;
+        if (convertFrom.equals("Celsius")){
+            if (convertTo.equals("Fahrenheit")){
+                conversion = (numberToConvert * (9.0/5.0)) + 32.0;
             }
-            else if (bottomUnit.equals("Kelvin")){
-                conversion = topNumber + 273.15;
-            }
-        }
-        else if(topUnit.equals("Fahrenheit")){
-            if (bottomUnit.equals("Celsius")){
-                conversion = (topNumber - 32.0) * (5.0/9.0);
-            }
-            else if (bottomUnit.equals("Kelvin")){
-                conversion = ((topNumber - 32.0) * (5.0/9.0)) + 273.15;
+            else if (convertTo.equals("Kelvin")){
+                conversion = numberToConvert + 273.15;
             }
         }
-        else if(topUnit.equals("Kelvin")){
-            if (bottomUnit.equals("Celsius")){
-                conversion = topNumber - 273.15;
+        else if(convertFrom.equals("Fahrenheit")){
+            if (convertTo.equals("Celsius")){
+                conversion = (numberToConvert - 32.0) * (5.0/9.0);
             }
-            else if (bottomUnit.equals("Fahrenheit")){
-                conversion = ((topNumber - 273.15) * (9.0/5.0)) + 32.0;
+            else if (convertTo.equals("Kelvin")){
+                conversion = ((numberToConvert - 32.0) * (5.0/9.0)) + 273.15;
+            }
+        }
+        else if(convertFrom.equals("Kelvin")){
+            if (convertTo.equals("Celsius")){
+                conversion = numberToConvert - 273.15;
+            }
+            else if (convertTo.equals("Fahrenheit")){
+                conversion = ((numberToConvert - 273.15) * (9.0/5.0)) + 32.0;
             }
         }
         return conversion;
