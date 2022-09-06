@@ -77,9 +77,21 @@ public class MainActivity extends AppCompatActivity {
                         break;
                 }
 
-                //TODO: only display with a decimal if necessary
+                String conversionMessage;
 
-                String conversionMessage = numberToConvert + " " + convertFrom + " is " + conversion + " " + convertTo;
+                if (conversion % 1 == 0) {
+                    String numberToConvertString = String.valueOf(numberToConvert);
+                    String convertedNumberString = String.valueOf(conversion);
+
+                    String numberToConvertNoDecimal = numberToConvertString.substring(0, numberToConvertString.indexOf("."));
+                    String convertedNumberNoDecimal = convertedNumberString.substring(0, convertedNumberString.indexOf("."));
+
+                    conversionMessage = numberToConvertNoDecimal + " " + convertFrom + " is " + convertedNumberNoDecimal + " " + convertTo;
+                }
+                else {
+                    conversionMessage = numberToConvert + " " + convertFrom + " is " + conversion + " " + convertTo;
+                }
+
                 txtConverted.setVisibility(View.VISIBLE);
                 txtConverted.setText(conversionMessage);
 
