@@ -9,11 +9,16 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.inline.InlineContentView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView txtNumberToConvert, txtConverted;
     private AutoCompleteTextView txtUnitFrom, txtUnitTo, txtConversion;
     private TextInputLayout inlConversion, inlUnitFrom, inlUnitTo, inlNumberToConvert;
+    private LinearLayout llHistory;
+
+    private static final DecimalFormat df = new DecimalFormat("0.00");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
         inlUnitFrom = findViewById(R.id.inlUnitFrom);
         inlUnitTo = findViewById(R.id.inlUnitTo);
         inlNumberToConvert = findViewById(R.id.inlNumberToConvert);
+        llHistory = findViewById(R.id.llHistory);
+
+        updateHistory();
 
         String[] conversionOptions = {"Temperature", "Length", "Mass", "Time"};
         ArrayAdapter<String> conversionAdapter = new ArrayAdapter<String>(MainActivity.this, R.layout.list_item, conversionOptions);
@@ -82,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
         btnConvert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 if (validateData()){
                     double conversion = 0.0;
                     String conversionType = String.valueOf(txtConversion.getText());
@@ -105,21 +115,8 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     // Displays the converted number with a decimal, only when necessary
-                    // TODO: display unit short form instead of whole word
-                    //       round number to 2 decimal places
-                    String conversionMessage;
-                    if (conversion % 1 == 0) {
-                        String numberToConvertString = String.valueOf(numberToConvert);
-                        String convertedNumberString = String.valueOf(conversion);
 
-                        String numberToConvertNoDecimal = numberToConvertString.substring(0, numberToConvertString.indexOf("."));
-                        String convertedNumberNoDecimal = convertedNumberString.substring(0, convertedNumberString.indexOf("."));
-
-                        conversionMessage = numberToConvertNoDecimal + " " + convertFrom + " is " + convertedNumberNoDecimal + " " + convertTo;
-                    }
-                    else {
-                        conversionMessage = numberToConvert + " " + convertFrom + " is " + conversion + " " + convertTo;
-                    }
+                    String conversionMessage = createConversionMessage(numberToConvert, conversion, convertFrom, convertTo);
 
                     txtConverted.setVisibility(View.VISIBLE);
                     txtConverted.setText(conversionMessage);
@@ -129,9 +126,28 @@ public class MainActivity extends AppCompatActivity {
                     } catch (Exception ex){
                         // no-op
                     }
+
+                    updateHistory();
                 }
             }
         });
+    }
+
+    private String createConversionMessage(double numberToConvert, double convertedNumber, String convertFrom, String convertTo){
+        String conversionMessage = "";
+        if (convertedNumber % 1 == 0) {
+            String numberToConvertString = String.valueOf(numberToConvert);
+            String convertedNumberString = String.valueOf(convertedNumber);
+
+            String numberToConvertNoDecimal = numberToConvertString.substring(0, numberToConvertString.indexOf("."));
+            String convertedNumberNoDecimal = convertedNumberString.substring(0, convertedNumberString.indexOf("."));
+
+            conversionMessage = numberToConvertNoDecimal + " " + convertFrom + " is " + convertedNumberNoDecimal + " " + convertTo;
+        }
+        else {
+            conversionMessage = numberToConvert + " " + convertFrom + " is " + df.format(convertedNumber) + " " + convertTo;
+        }
+        return conversionMessage;
     }
 
     private boolean validateData(){
@@ -163,6 +179,20 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return validData;
+    }
+
+    private void updateHistory(){
+        llHistory.removeAllViews();
+
+        List<Conversion> conversionHistory = ((ConverterDB) getApplication()).getAllConversion();
+
+        for (Conversion conversion: conversionHistory){
+            TextView textView = new TextView(this);
+            String message = createConversionMessage(conversion.getNumberToConvert(), conversion.getConvertedNumber(), conversion.getConvertFrom(), conversion.getConvertTo());
+            textView.setText(message);
+
+            llHistory.addView(textView);
+        }
     }
 
     private double temperatureConversion(String convertFrom, String convertTo, double numberToConvert){
