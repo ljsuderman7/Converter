@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
         txtConverted = findViewById(R.id.txtConverted);
         txtConversion = findViewById(R.id.txtConversion);
 
-        //TODO: add more conversion options
         String[] conversionOptions = {"Temperature", "Length", "Mass", "Area", "Data", "Time"};
         ArrayAdapter<String> conversionAdapter = new ArrayAdapter<String>(MainActivity.this, R.layout.list_item, conversionOptions);
         txtConversion.setAdapter(conversionAdapter);
@@ -40,14 +39,8 @@ public class MainActivity extends AppCompatActivity {
         String[] lengthOptions = {"Millimetres", "Centimetres", "Metres", "Kilometers", "Inches", "Feet", "Yards", "Miles"};
         ArrayAdapter<String> lengthAdapter = new ArrayAdapter<String>(MainActivity.this, R.layout.list_item, lengthOptions);
 
-        String[] massOptions = {"Grams", "Kilograms", "Ounces", "Pounds"};
+        String[] massOptions = {"Milligram", "Grams", "Kilograms", "Ounces", "Pounds"};
         ArrayAdapter<String> massAdapter = new ArrayAdapter<String>(MainActivity.this, R.layout.list_item, massOptions);
-
-        String[] areaOptions = {"Acres", "Hectares", "Square centimetres", "Square feet", "Square inches", "Square metres"};
-        ArrayAdapter<String> areaAdapter = new ArrayAdapter<String>(MainActivity.this, R.layout.list_item, areaOptions);
-
-        String[] dataOptions = {"Bits", "Bytes", "Kilobytes", "Megabytes", "Gigabytes", "Terabytes"};
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(MainActivity.this, R.layout.list_item, dataOptions);
 
         String[] timeOptions = {"Milliseconds", "Seconds", "Minutes", "Hours", "Days"};
         ArrayAdapter<String> timeAdapter = new ArrayAdapter<String>(MainActivity.this, R.layout.list_item, timeOptions);
@@ -68,14 +61,6 @@ public class MainActivity extends AppCompatActivity {
                     case "Mass":
                         txtUnitFrom.setAdapter(massAdapter);
                         txtUnitTo.setAdapter(massAdapter);
-                        break;
-                    case "Area":
-                        txtUnitFrom.setAdapter(areaAdapter);
-                        txtUnitTo.setAdapter(areaAdapter);
-                        break;
-                    case "Data":
-                        txtUnitFrom.setAdapter(dataAdapter);
-                        txtUnitTo.setAdapter(dataAdapter);
                         break;
                     case "Time":
                         txtUnitFrom.setAdapter(timeAdapter);
@@ -101,16 +86,10 @@ public class MainActivity extends AppCompatActivity {
                         conversion = lengthConversion(convertFrom, convertTo ,numberToConvert);
                         break;
                     case "Mass":
-                        conversion = lengthConversion(convertFrom, convertTo ,numberToConvert);
-                        break;
-                    case "Area":
-                        conversion = lengthConversion(convertFrom, convertTo ,numberToConvert);
-                        break;
-                    case "Data":
-                        conversion = lengthConversion(convertFrom, convertTo ,numberToConvert);
+                        conversion = massConversion(convertFrom, convertTo ,numberToConvert);
                         break;
                     case "Time":
-                        conversion = lengthConversion(convertFrom, convertTo ,numberToConvert);
+                        conversion = timeConversion(convertFrom, convertTo ,numberToConvert);
                         break;
                     default:
                         //TODO: Make error snackbar
@@ -119,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Displays the converted number with a decimal, only when necessary
                 // TODO: display unit short form instead of whole word
+                //       round number to 2 decimal places
                 String conversionMessage;
                 if (conversion % 1 == 0) {
                     String numberToConvertString = String.valueOf(numberToConvert);
@@ -177,7 +157,384 @@ public class MainActivity extends AppCompatActivity {
     private double lengthConversion(String convertFrom, String convertTo, double numberToConvert){
         double conversion = 0.0;
 
+        switch (convertFrom) {
+            case "Millimetres":
+                switch (convertTo) {
+                    case "Centimetres":
+                        conversion = numberToConvert / 10.0;
+                        break;
+                    case "Metres":
+                        conversion = numberToConvert / 1000.0;
+                        break;
+                    case "Kilometers":
+                        conversion = numberToConvert / 1000000.0;
+                        break;
+                    case "Inches":
+                        conversion = numberToConvert / 25.4;
+                        break;
+                    case "Feet":
+                        conversion = numberToConvert / 304.8;
+                        break;
+                    case "Yards":
+                        conversion = numberToConvert / 914.4;
+                        break;
+                    case "Miles":
+                        conversion = numberToConvert / 1609344.0;
+                        break;
+                }
+                break;
+            case "Centimetres":
+                switch (convertTo) {
+                    case "Millimetres":
+                        conversion = numberToConvert * 10.0;
+                        break;
+                    case "Metres":
+                        conversion = numberToConvert / 100.0;
+                        break;
+                    case "Kilometers":
+                        conversion = numberToConvert / 100000.0;
+                        break;
+                    case "Inches":
+                        conversion = numberToConvert / 2.54;
+                        break;
+                    case "Feet":
+                        conversion = numberToConvert / 30.48;
+                        break;
+                    case "Yards":
+                        conversion = numberToConvert / 91.44;
+                        break;
+                    case "Miles":
+                        conversion = numberToConvert / 160934.4;
+                        break;
+                }
+            case "Metres":
+                switch (convertTo) {
+                    case "Millimetres":
+                        conversion = numberToConvert * 1000.0;
+                        break;
+                    case "Centimetres":
+                        conversion = numberToConvert * 100.0;
+                        break;
+                    case "Kilometers":
+                        conversion = numberToConvert / 1000.0;
+                        break;
+                    case "Inches":
+                        conversion = numberToConvert * 39.37;
+                        break;
+                    case "Feet":
+                        conversion = numberToConvert / 3.281;
+                        break;
+                    case "Yards":
+                        conversion = numberToConvert / 1.094;
+                        break;
+                    case "Miles":
+                        conversion = numberToConvert / 1609.0;
+                        break;
+                }
+                break;
+            case "Kilometers":
+                switch (convertTo) {
+                    case "Millimetres":
+                        conversion = numberToConvert * 1000000.0;
+                        break;
+                    case "Centimetres":
+                        conversion = numberToConvert * 100000.0;
+                        break;
+                    case "Metres":
+                        conversion = numberToConvert * 1000.0;
+                        break;
+                    case "Inches":
+                        conversion = numberToConvert * 39370.0;
+                        break;
+                    case "Feet":
+                        conversion = numberToConvert * 3281.0;
+                        break;
+                    case "Yards":
+                        conversion = numberToConvert * 1094.0;
+                        break;
+                    case "Miles":
+                        conversion = numberToConvert / 1.609;
+                        break;
+                }
+                break;
+            case "Inches":
+                switch (convertTo) {
+                    case "Millimetres":
+                        conversion = numberToConvert * 25.4;
+                        break;
+                    case "Centimetres":
+                        conversion = numberToConvert * 2.54;
+                        break;
+                    case "Metres":
+                        conversion = numberToConvert / 39.37;
+                        break;
+                    case "Kilometers":
+                        conversion = numberToConvert / 39370.0;
+                        break;
+                    case "Feet":
+                        conversion = numberToConvert * 12.0;
+                        break;
+                    case "Yards":
+                        conversion = numberToConvert * 36.0;
+                        break;
+                    case "Miles":
+                        conversion = numberToConvert / 63360.0;
+                        break;
+                }
+                break;
+            case "Feet":
+                switch (convertTo) {
+                    case "Millimetres":
+                        conversion = numberToConvert * 304.8;
+                        break;
+                    case "Centimetres":
+                        conversion = numberToConvert * 30.48;
+                        break;
+                    case "Metres":
+                        conversion = numberToConvert / 3.281;
+                        break;
+                    case "Kilometers":
+                        conversion = numberToConvert / 3281.0;
+                        break;
+                    case "Inches":
+                        conversion = numberToConvert / 12.0;
+                        break;
+                    case "Yards":
+                        conversion = numberToConvert / 3.0;
+                        break;
+                    case "Miles":
+                        conversion = numberToConvert / 5280.0;
+                        break;
+                }
+                break;
+            case "Yards":
+                switch (convertTo) {
+                    case "Millimetres":
+                        conversion = numberToConvert * 914.4;
+                        break;
+                    case "Centimetres":
+                        conversion = numberToConvert * 91.44;
+                        break;
+                    case "Metres":
+                        conversion = numberToConvert / 1.094;
+                        break;
+                    case "Kilometers":
+                        conversion = numberToConvert / 1094.0;
+                        break;
+                    case "Inches":
+                        conversion = numberToConvert * 36.0;
+                        break;
+                    case "Feet":
+                        conversion = numberToConvert * 3.0;
+                        break;
+                    case "Miles":
+                        conversion = numberToConvert / 1760.0;
+                        break;
+                }
+                break;
+            case "Miles":
+                switch (convertTo) {
+                    case "Millimetres":
+                        conversion = numberToConvert / 1609344.0;
+                        break;
+                    case "Centimetres":
+                        conversion = numberToConvert * 160900.0;
+                        break;
+                    case "Metres":
+                        conversion = numberToConvert / 1609.0;
+                        break;
+                    case "Kilometers":
+                        conversion = numberToConvert * 1.609;
+                        break;
+                    case "Inches":
+                        conversion = numberToConvert * 63360.0;
+                        break;
+                    case "Feet":
+                        conversion = numberToConvert * 5280.0;
+                        break;
+                    case "Yards":
+                        conversion = numberToConvert * 1760.0;
+                        break;
+                }
+                break;
+        }
 
+        return conversion;
+    }
+
+    private double massConversion(String convertFrom, String convertTo, double numberToConvert){
+        double conversion = 0.0;
+
+        switch (convertFrom) {
+            case "Milligram":
+                switch (convertTo) {
+                    case "Grams":
+                        conversion = numberToConvert / 1000.0;
+                        break;
+                    case "Kilograms":
+                        conversion = numberToConvert / 1000000.0;
+                        break;
+                    case "Ounces":
+                        conversion = numberToConvert / 28350.0;
+                        break;
+                    case "Pounds":
+                        conversion = numberToConvert / 453600.0;
+                        break;
+                }
+                break;
+            case "Grams":
+                switch (convertTo) {
+                    case "Milligrams":
+                        conversion = numberToConvert * 1000.0;
+                        break;
+                    case "Kilograms":
+                        conversion = numberToConvert / 1000.0;
+                        break;
+                    case "Ounces":
+                        conversion = numberToConvert / 28.35;
+                        break;
+                    case "Pounds":
+                        conversion = numberToConvert / 453.6;
+                        break;
+                }
+                break;
+            case "Kilograms":
+                switch (convertTo) {
+                    case "Milligrams":
+                        conversion = numberToConvert * 1000000.0;
+                        break;
+                    case "Grams":
+                        conversion = numberToConvert * 1000.0;
+                        break;
+                    case "Ounces":
+                        conversion = numberToConvert * 35.274;
+                        break;
+                    case "Pounds":
+                        conversion = numberToConvert * 2.205;
+                        break;
+                }
+                break;
+            case "Ounces":
+                switch (convertTo) {
+                    case "Milligrams":
+                        conversion = numberToConvert * 28350.0;
+                        break;
+                    case "Grams":
+                        conversion = numberToConvert * 28.35;
+                        break;
+                    case "Kilograms":
+                        conversion = numberToConvert / 35.274;
+                        break;
+                    case "Pounds":
+                        conversion = numberToConvert / 16.0;
+                        break;
+                }
+            case "Pounds":
+                switch (convertTo) {
+                    case "Milligrams":
+                        conversion = numberToConvert * 453600.0;
+                        break;
+                    case "Grams":
+                        conversion = numberToConvert * 453.6;
+                        break;
+                    case "Kilograms":
+                        conversion = numberToConvert / 2.205;
+                        break;
+                    case "Ounces":
+                        conversion = numberToConvert * 16.0;
+                        break;
+                }
+                break;
+        }
+
+        return conversion;
+    }
+
+    private double timeConversion(String convertFrom, String convertTo, double numberToConvert){
+        double conversion = 0.0;
+
+        switch (convertFrom) {
+            case "Milliseconds":
+                switch (convertTo) {
+                    case "Seconds":
+                        conversion = numberToConvert / 1000.0;
+                        break;
+                    case "Minutes":
+                        conversion = numberToConvert / 60000.0;
+                        break;
+                    case "Hours":
+                        conversion = numberToConvert / 3600000.0;
+                        break;
+                    case "Days":
+                        conversion = numberToConvert / 86400000.0;
+                        break;
+                }
+                break;
+            case "Seconds":
+                switch (convertTo) {
+                    case "Milliseconds":
+                        conversion = numberToConvert * 1000.0;
+                        break;
+                    case "Minutes":
+                        conversion = numberToConvert / 60.0;
+                        break;
+                    case "Hours":
+                        conversion = numberToConvert / 3600.0;
+                        break;
+                    case "Days":
+                        conversion = numberToConvert / 86400.0;
+                        break;
+                }
+                break;
+            case "Minutes":
+                switch (convertTo) {
+                    case "Milliseconds":
+                        conversion = numberToConvert * 60000.0;
+                        break;
+                    case "Seconds":
+                        conversion = numberToConvert * 60.0;
+                        break;
+                    case "Hours":
+                        conversion = numberToConvert / 60.0;
+                        break;
+                    case "Days":
+                        conversion = numberToConvert / 1440.0;
+                        break;
+                }
+                break;
+            case "Hours":
+                switch (convertTo) {
+                    case "Milliseconds":
+                        conversion = numberToConvert * 3600000.0;
+                        break;
+                    case "Seconds":
+                        conversion = numberToConvert * 3600.0;
+                        break;
+                    case "Minutes":
+                        conversion = numberToConvert * 60.0;
+                        break;
+                    case "Days":
+                        conversion = numberToConvert / 24.0;
+                        break;
+                }
+                break;
+            case "Days":
+                switch (convertTo) {
+                    case "Milliseconds":
+                        conversion = numberToConvert * 86400000.0;
+                        break;
+                    case "Seconds":
+                        conversion = numberToConvert * 86400.0;
+                        break;
+                    case "Minutes":
+                        conversion = numberToConvert * 1440.0;
+                        break;
+                    case "Hours":
+                        conversion = numberToConvert * 24.0;
+                        break;
+                }
+                break;
+        }
 
         return conversion;
     }
