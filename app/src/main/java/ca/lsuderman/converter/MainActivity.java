@@ -10,12 +10,17 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.inline.InlineContentView;
+
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 
 public class MainActivity extends AppCompatActivity {
 
     private Button btnConvert;
     private TextView txtNumberToConvert, txtConverted;
     private AutoCompleteTextView txtUnitFrom, txtUnitTo, txtConversion;
+    private TextInputLayout inlConversion, inlUnitFrom, inlUnitTo, inlNumberToConvert;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +33,12 @@ public class MainActivity extends AppCompatActivity {
         txtNumberToConvert = findViewById(R.id.txtNumberToConvert);
         txtConverted = findViewById(R.id.txtConverted);
         txtConversion = findViewById(R.id.txtConversion);
+        inlConversion = findViewById(R.id.inlConversion);
+        inlUnitFrom = findViewById(R.id.inlUnitFrom);
+        inlUnitTo = findViewById(R.id.inlUnitTo);
+        inlNumberToConvert = findViewById(R.id.inlNumberToConvert);
 
-        String[] conversionOptions = {"Temperature", "Length", "Mass", "Area", "Data", "Time"};
+        String[] conversionOptions = {"Temperature", "Length", "Mass", "Time"};
         ArrayAdapter<String> conversionAdapter = new ArrayAdapter<String>(MainActivity.this, R.layout.list_item, conversionOptions);
         txtConversion.setAdapter(conversionAdapter);
 
@@ -73,56 +82,87 @@ public class MainActivity extends AppCompatActivity {
         btnConvert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                double conversion = 0.0;
-                String conversionType = String.valueOf(txtConversion.getText());
-                String convertFrom = String.valueOf(txtUnitFrom.getText());
-                String convertTo = String.valueOf(txtUnitTo.getText());
-                double numberToConvert = Double.parseDouble(String.valueOf(txtNumberToConvert.getText()));
-                switch (conversionType) {
-                    case "Temperature":
-                        conversion = temperatureConversion(convertFrom, convertTo ,numberToConvert);
-                        break;
-                    case "Length":
-                        conversion = lengthConversion(convertFrom, convertTo ,numberToConvert);
-                        break;
-                    case "Mass":
-                        conversion = massConversion(convertFrom, convertTo ,numberToConvert);
-                        break;
-                    case "Time":
-                        conversion = timeConversion(convertFrom, convertTo ,numberToConvert);
-                        break;
-                    default:
-                        //TODO: Make error snackbar
-                        break;
-                }
 
-                // Displays the converted number with a decimal, only when necessary
-                // TODO: display unit short form instead of whole word
-                //       round number to 2 decimal places
-                String conversionMessage;
-                if (conversion % 1 == 0) {
-                    String numberToConvertString = String.valueOf(numberToConvert);
-                    String convertedNumberString = String.valueOf(conversion);
+                if (validateData()){
+                    double conversion = 0.0;
+                    String conversionType = String.valueOf(txtConversion.getText());
+                    String convertFrom = String.valueOf(txtUnitFrom.getText());
+                    String convertTo = String.valueOf(txtUnitTo.getText());
+                    double numberToConvert = Double.parseDouble(String.valueOf(txtNumberToConvert.getText()));
+                    switch (conversionType) {
+                        case "Temperature":
+                            conversion = temperatureConversion(convertFrom, convertTo ,numberToConvert);
+                            break;
+                        case "Length":
+                            conversion = lengthConversion(convertFrom, convertTo ,numberToConvert);
+                            break;
+                        case "Mass":
+                            conversion = massConversion(convertFrom, convertTo ,numberToConvert);
+                            break;
+                        case "Time":
+                            conversion = timeConversion(convertFrom, convertTo ,numberToConvert);
+                            break;
+                    }
 
-                    String numberToConvertNoDecimal = numberToConvertString.substring(0, numberToConvertString.indexOf("."));
-                    String convertedNumberNoDecimal = convertedNumberString.substring(0, convertedNumberString.indexOf("."));
+                    // Displays the converted number with a decimal, only when necessary
+                    // TODO: display unit short form instead of whole word
+                    //       round number to 2 decimal places
+                    String conversionMessage;
+                    if (conversion % 1 == 0) {
+                        String numberToConvertString = String.valueOf(numberToConvert);
+                        String convertedNumberString = String.valueOf(conversion);
 
-                    conversionMessage = numberToConvertNoDecimal + " " + convertFrom + " is " + convertedNumberNoDecimal + " " + convertTo;
-                }
-                else {
-                    conversionMessage = numberToConvert + " " + convertFrom + " is " + conversion + " " + convertTo;
-                }
+                        String numberToConvertNoDecimal = numberToConvertString.substring(0, numberToConvertString.indexOf("."));
+                        String convertedNumberNoDecimal = convertedNumberString.substring(0, convertedNumberString.indexOf("."));
 
-                txtConverted.setVisibility(View.VISIBLE);
-                txtConverted.setText(conversionMessage);
+                        conversionMessage = numberToConvertNoDecimal + " " + convertFrom + " is " + convertedNumberNoDecimal + " " + convertTo;
+                    }
+                    else {
+                        conversionMessage = numberToConvert + " " + convertFrom + " is " + conversion + " " + convertTo;
+                    }
 
-                try {
-                    ((ConverterDB) getApplication()).addConversion(conversionType, convertFrom, convertTo, numberToConvert, conversion);
-                } catch (Exception ex){
-                    // no-op
+                    txtConverted.setVisibility(View.VISIBLE);
+                    txtConverted.setText(conversionMessage);
+
+                    try {
+                        ((ConverterDB) getApplication()).addConversion(conversionType, convertFrom, convertTo, numberToConvert, conversion);
+                    } catch (Exception ex){
+                        // no-op
+                    }
                 }
             }
         });
+    }
+
+    private boolean validateData(){
+        boolean validData = true;
+
+        inlConversion.setError(null);
+        inlUnitFrom.setError(null);
+        inlUnitTo.setError(null);
+        inlNumberToConvert.setError(null);
+
+        if (String.valueOf(txtConversion.getText()).equals("")){
+            inlConversion.setError("Select Conversion Type");
+            validData = false;
+        }
+
+        if (String.valueOf(txtUnitFrom.getText()).equals("")){
+            inlUnitFrom.setError("Select Unit");
+            validData = false;
+        }
+
+        if (String.valueOf(txtUnitTo.getText()).equals("")){
+            inlUnitTo.setError("Select Unit");
+            validData = false;
+        }
+
+        if (String.valueOf(txtNumberToConvert.getText()).equals("")){
+            inlNumberToConvert.setError("Enter number to convert");
+            validData = false;
+        }
+
+        return validData;
     }
 
     private double temperatureConversion(String convertFrom, String convertTo, double numberToConvert){
