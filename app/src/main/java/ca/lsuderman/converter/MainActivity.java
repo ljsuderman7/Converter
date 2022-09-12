@@ -1,7 +1,10 @@
 package ca.lsuderman.converter;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.inline.InlineContentView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -22,7 +26,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button btnConvert;
+    private Button btnConvert, btnClearHistory;
     private TextView txtNumberToConvert, txtConverted;
     private AutoCompleteTextView txtUnitFrom, txtUnitTo, txtConversion;
     private TextInputLayout inlConversion, inlUnitFrom, inlUnitTo, inlNumberToConvert;
@@ -30,12 +34,16 @@ public class MainActivity extends AppCompatActivity {
 
     private static final DecimalFormat df = new DecimalFormat("0.00");
 
+    private Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        context = getApplicationContext();
 
         btnConvert = findViewById(R.id.btnConvert);
+        btnClearHistory = findViewById(R.id.btnClearHistory);
         txtUnitFrom = findViewById(R.id.txtUnitFrom);
         txtUnitTo = findViewById(R.id.txtUnitTo);
         txtNumberToConvert = findViewById(R.id.txtNumberToConvert);
@@ -116,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
                     // Displays the converted number with a decimal, only when necessary
 
-                    String conversionMessage = createConversionMessage(numberToConvert, conversion, convertFrom, convertTo);
+                    String conversionMessage = createConversionMessage(numberToConvert, conversion, convertFrom, convertTo, false);
 
                     txtConverted.setVisibility(View.VISIBLE);
                     txtConverted.setText(conversionMessage);
@@ -131,9 +139,17 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        btnClearHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((ConverterDB) getApplication()).deleteAllConversions();
+                updateHistory();
+            }
+        });
     }
 
-    private String createConversionMessage(double numberToConvert, double convertedNumber, String convertFrom, String convertTo){
+    private String createConversionMessage(double numberToConvert, double convertedNumber, String convertFrom, String convertTo, boolean history){
         String conversionMessage = "";
         if (convertedNumber % 1 == 0) {
             String numberToConvertString = String.valueOf(numberToConvert);
@@ -142,10 +158,18 @@ public class MainActivity extends AppCompatActivity {
             String numberToConvertNoDecimal = numberToConvertString.substring(0, numberToConvertString.indexOf("."));
             String convertedNumberNoDecimal = convertedNumberString.substring(0, convertedNumberString.indexOf("."));
 
-            conversionMessage = numberToConvertNoDecimal + " " + convertFrom + " is " + convertedNumberNoDecimal + " " + convertTo;
+            if (history){
+                conversionMessage = numberToConvertNoDecimal + " " + convertFrom + " -> " + convertedNumberNoDecimal + " " + convertTo;
+            } else{
+                conversionMessage = numberToConvertNoDecimal + " " + convertFrom + " is " + convertedNumberNoDecimal + " " + convertTo;
+            }
         }
         else {
-            conversionMessage = numberToConvert + " " + convertFrom + " is " + df.format(convertedNumber) + " " + convertTo;
+            if (history) {
+                conversionMessage = df.format(numberToConvert) + " " + convertFrom + " -> " + df.format(convertedNumber) + " " + convertTo;
+            } else {
+                conversionMessage = df.format(numberToConvert) + " " + convertFrom + " is " + df.format(convertedNumber) + " " + convertTo;
+            }
         }
         return conversionMessage;
     }
@@ -188,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
 
         for (Conversion conversion: conversionHistory){
             TextView textView = new TextView(this);
-            String message = createConversionMessage(conversion.getNumberToConvert(), conversion.getConvertedNumber(), conversion.getConvertFrom(), conversion.getConvertTo());
+            String message = createConversionMessage(conversion.getNumberToConvert(), conversion.getConvertedNumber(), conversion.getConvertFrom(), conversion.getConvertTo(), true);
             textView.setText(message);
 
             llHistory.addView(textView);

@@ -94,7 +94,7 @@ public class ConverterDB extends Application {
         db.execSQL("DELETE FROM tbl_conversion WHERE conversion_id = " + id);
     }
 
-    public void deleteAllEvents() {
+    public void deleteAllConversions() {
         SQLiteDatabase db = helper.getWritableDatabase();
         db.execSQL("DELETE FROM tbl_conversion");
     }
